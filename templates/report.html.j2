@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>HFCL Report</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body { font-family: Arial; background:#111; color:#eee; }
+
+table { border-collapse: collapse; width: 90%; margin:auto; margin-top:20px;}
+th, td { padding:10px; border:1px solid #444; text-align:center;}
+th { background:#222; }
+
+.pass { color:#00ff88; }
+.fail { color:#ff4d4d; font-weight:bold;}
+
+.log { display:none; background:#222; padding:10px; }
+
+button { padding:5px 10px; cursor:pointer; }
+
+#chart { width:200px; height:200px; margin:auto; }
+</style>
+
+<script>
+function toggleLog(id){
+  var x = document.getElementById(id);
+  x.style.display = x.style.display === "none" ? "block" : "none";
+}
+</script>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center;">HFCL TEST REPORT</h2>
+
+{% set reports = hostvars.values()
+   | selectattr('switch_report', 'defined')
+   | map(attribute='switch_report')
+   | list %}
+
+{% set total_pass = reports | map(attribute='pass_count') | map('int') | sum %}
+{% set total_fail = reports | map(attribute='fail_count') | map('int') | sum %}
+
+<!-- PIE CHART -->
+<canvas id="chart"></canvas>
+
+<script>
+new Chart(document.getElementById('chart'), {
+  type: 'pie',
+  data: {
+    labels: ['PASS', 'FAIL'],
+    datasets: [{
+      data: [{{ total_pass }}, {{ total_fail }}],
+      backgroundColor: ['#00ff88','#ff4d4d']
+    }]
+  }
+});
+</script>
+
+<table>
+<tr>
+  <th>Switch</th>
+  <th>Total</th>
+  <th>PASS</th>
+  <th>FAIL</th>
+</tr>
+
+{% for r in reports %}
+<tr>
+  <td>{{ r.host }}</td>
+  <td>{{ r.total }}</td>
+  <td class="pass">{{ r.pass_count }}</td>
+  <td class="fail">{{ r.fail_count }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% for r in reports %}
+<h3 style="text-align:center;">{{ r.host }}</h3>
+
+<table>
+<tr>
+<th>Script</th>
+<th>Status</th>
+<th>Time</th>
+<th>Logs</th>
+</tr>
+
+{% for s in r.scripts %}
+<tr>
+<td>{{ s.name }}</td>
+<td class="{{ 'pass' if s.status == 'PASS' else 'fail' }}">{{ s.status }}</td>
+<td>{{ s.time }}</td>
+<td>
+<button onclick="toggleLog('log{{ loop.index }}')">View</button>
+</td>
+</tr>
+
+<tr id="log{{ loop.index }}" class="log">
+<td colspan="4"><pre>{{ s.log }}</pre></td>
+</tr>
+{% endfor %}
+
+</table>
+{% endfor %}
+
+</body>
+</html>
