@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 TEST-HFCL-SW-NTP-SEC-09  —  Secure NTP (NTS) Operation Verification
+=======
+TEST-HFCL-SW-NTP-SEC  —  Secure NTP (NTS) Operation Verification
+>>>>>>> e7d768ed (Management scripts)
 =================================================================
 Test Objective:
   Verify Secure NTP operations using a CA certificate on the switch.
@@ -876,6 +880,7 @@ def run_test():
 
     print()
     if all_pass:
+<<<<<<< HEAD
         print("""🎉  ALL TESTS PASSED \n
 
  TEST-HFCL-SW-09  —  Secure NTP (NTS) Operation Verification
@@ -915,6 +920,12 @@ Successfully  Passed !!!!!!!!!!!!!!!!!!!
 
 
 """)
+=======
+        print("🎉  ALL TESTS PASSED")
+        print("    TEST-HFCL-SW-NTP-SEC — Secure NTP verified:")
+        print("    CA cert uploaded, NTS sync confirmed, clock correct,")
+        print("    and disable confirmed — all passed.")
+>>>>>>> e7d768ed (Management scripts)
     else:
         print("❌  ONE OR MORE TESTS FAILED — review output above")
         print()

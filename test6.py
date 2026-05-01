@@ -481,7 +481,11 @@ def run_test():
     # ═══════════════════════════════════════════════════════════
     # SUMMARY
     # ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
     section("TEST SUMMARY — Telnet Privilege & Multi-User")
+=======
+    section("TEST SUMMARY — TEST-HFCL-SW-02  Telnet Privilege & Multi-User")
+>>>>>>> e7d768ed (Management scripts)
     rows = [
         ("Telnet server enabled (aaa auth telnet local)",  results.get("telnet_enabled")),
         (f"User '{USER1_NAME}' created (privilege {USER1_PRIV})",
@@ -505,6 +509,7 @@ def run_test():
 
     print()
     if all_pass:
+<<<<<<< HEAD
         print("""🎉  ALL TESTS PASSED \n
     TEST-HFCL-SW-06 - Management - Verify Telnet service by lower privilege level,wrong password,user and Multi-User Connectivity. \n
 
@@ -520,6 +525,12 @@ PROCEDURE: \n
 
 Successfully passed !!!!!!!!!!!!!!!!!!!!!!!
 """)
+=======
+        print("🎉  ALL TESTS PASSED")
+        print("    TEST-HFCL-SW-02 - Management - Verify Telnet service with lower")
+        print("    privilege level, wrong password, non-existent user, and multi-user")
+        print("    concurrent connectivity — successfully passed.")
+>>>>>>> e7d768ed (Management scripts)
     else:
         print("❌  ONE OR MORE TESTS FAILED — review output above")
     print("=" * 65)

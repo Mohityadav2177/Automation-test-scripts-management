@@ -353,6 +353,7 @@ def run_test():
 
     print()
     if all_pass:
+<<<<<<< HEAD
         print(""""🎉  ALL TESTS PASSED \n 
 
 TEST-HFCL-SW-03 - Management - Verify SSH port Customization and SSH client support.  \n 
@@ -367,6 +368,9 @@ command in configuration mode.
 
 Successfully Passed!!!!!!!!!!!!!
 """)
+=======
+        print("🎉  ALL TESTS PASSED \n TEST-HFCL-SW-03 - Management - Verify SSH port Customization and SSH client support successfully passed")
+>>>>>>> e7d768ed (Management scripts)
     else:
         print("❌  ONE OR MORE TESTS FAILED — review output above")
     print("=" * 60)

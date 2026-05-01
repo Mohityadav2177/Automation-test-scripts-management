@@ -1,4 +1,5 @@
 """
+<<<<<<< HEAD
 TEST-HFCL-SW-NTP-08  —  NTP Operation Verification
 =================================================
 Test Objective: Verify NTP operations on the switch. \n
@@ -8,6 +9,20 @@ Procedure: \n
 2. Config  using "ntp server 1 ip-address 192.168.180.69" .
 3. Verify using "show ntp status" command
 4. Verify clock using "show clock"
+=======
+TEST-HFCL-SW-NTP  —  NTP Operation Verification
+=================================================
+Test Objective:
+  Verify NTP operations on the switch.
+
+Procedure:
+  PRE-CONFIG : Capture switch clock BEFORE NTP (baseline)
+  PHASE 1    : Enable NTP client + configure server + timezone
+  PHASE 2    : Verify show ntp status / connect-status / show clock
+  PHASE 3    : Negative — Disable NTP (no ntp server 1 + no ntp)
+               Verify NTP mode disabled + server entry removed
+               Re-enable NTP, switch left in clean working state
+>>>>>>> e7d768ed (Management scripts)
 
 Usage:
   python3 ntp_test.py [switch_ip] [admin_user] [admin_pass] [ntp_server_ip]
@@ -656,7 +671,11 @@ def run_test():
     print()
     if all_pass:
         print("🎉  ALL TESTS PASSED")
+<<<<<<< HEAD
         print("    TEST-HFCL-SW-NTP - Management-08 - NTP operation verified:")
+=======
+        print("    TEST-HFCL-SW-NTP - Management - NTP operation verified:")
+>>>>>>> e7d768ed (Management scripts)
         print("    NTP enabled + server verified, clock correct,")
         print("    and NTP disable confirmed — all passed.")
     else:

@@ -390,6 +390,7 @@ def run_test():
 
     print()
     if all_pass:
+<<<<<<< HEAD
         print("""🎉  ALL TESTS PASSED" \n
   TEST-HFCL-SW-05 - Management - Verify the Telnet service by enabling and disabling it, and confirm that \n
                     Telnet client support is functioning properly. \n
@@ -404,6 +405,12 @@ PROCEDURE: \n
 
 Successfully passed !!!!!!!!!!!!!!!!!!!!!!
   """)
+=======
+        print("🎉  ALL TESTS PASSED")
+        print("    TEST-HFCL-SW-01 - Management - Verify the Telnet service by enabling")
+        print("    and disabling it, and confirm that Telnet client support is functioning")
+        print("    properly — successfully passed.")
+>>>>>>> e7d768ed (Management scripts)
     else:
         print("❌  ONE OR MORE TESTS FAILED — review output above")
     print("=" * 60)

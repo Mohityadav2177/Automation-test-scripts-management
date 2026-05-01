@@ -643,6 +643,7 @@ def run_test():
 
     print()
     if all_pass:
+<<<<<<< HEAD
         print("""🎉  ALL TESTS PASSED \n 
 
 TEST-HFCL-SW-10  —  Secure NTP (MD5 Auth-Hash) Verification
@@ -680,6 +681,12 @@ Expected Result:
 Usage:
   python3 ntp_md5_test.py [switch_ip] [admin_user] [admin_pass]"""
  )
+=======
+        print("🎉  ALL TESTS PASSED")
+        print("    TEST-HFCL-SW-NTP-MD5 — MD5 auth-hash NTP verified:")
+        print("    NTP enabled, AUTH=YES confirmed, clock correct,")
+        print("    and disable confirmed — all passed.")
+>>>>>>> e7d768ed (Management scripts)
     else:
         print("❌  ONE OR MORE TESTS FAILED — review output above")
         print()

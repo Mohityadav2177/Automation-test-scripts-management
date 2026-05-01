@@ -255,6 +255,7 @@ def run_test():
 
     print()
     if all_pass:
+<<<<<<< HEAD
         print("ALL TESTS PASSED \n")
         print("TEST-HFCL-SW-02 - Management - Verify SSH service by lower privilege")
         print(""" level, wrong password, user and Multi-User Connectivity \n PROCEDURE:-  	
@@ -269,6 +270,11 @@ def run_test():
 9.configure one more user  username palc privilege 5 password unencrypted  Discover@1234  and Verify Multiple users login
 
               \n successfully passed.""")
+=======
+        print("🎉  ALL TESTS PASSED")
+        print("    TEST-HFCL-SW-02 - Management - Verify SSH service by lower privilege")
+        print("    level, wrong password, user and Multi-User Connectivity successfully passed.")
+>>>>>>> e7d768ed (Management scripts)
     else:
         print("❌  ONE OR MORE TESTS FAILED — review output above")
     print("=" * 60)

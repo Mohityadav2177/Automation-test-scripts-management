@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 TEST-HFCL-SW-07  —  TFTP Operation Verification
+=======
+TEST-HFCL-SW-03  —  TFTP Operation Verification
+>>>>>>> e7d768ed (Management scripts)
 ================================================
 Procedure:
   1. Copy running-config FROM switch TO TFTP server   (device → server)
@@ -681,7 +685,11 @@ def run_test():
     # ══════════════════════════════════════════════════════════
     # SUMMARY
     # ══════════════════════════════════════════════════════════
+<<<<<<< HEAD
     section("TEST SUMMARY — TFTP Operation")
+=======
+    section("TEST SUMMARY — TEST-HFCL-SW-03  TFTP Operation")
+>>>>>>> e7d768ed (Management scripts)
     rows = [
         ("running-config upload: device → TFTP server",   results.get("dev_to_server")),
         ("flash:tftp-testing saved: TFTP server → device", results.get("server_to_dev")),
@@ -696,6 +704,7 @@ def run_test():
 
     print()
     if all_pass:
+<<<<<<< HEAD
         print("""🎉  ALL TESTS PASSED \n
  TEST-HFCL-SW-07 - Management - Verify TFTP operation. \n
 
@@ -707,6 +716,12 @@ PROCEDURE: \n
 
 Successfully Passed !!!!!!!!!!!!!!!!!!!!!!
 """)
+=======
+        print("🎉  ALL TESTS PASSED")
+        print("    TEST-HFCL-SW-03 - Management - TFTP operation verified:")
+        print("    device-to-server upload, server-to-device download, and")
+        print("    rejection of wrong IP and wrong filename — all passed.")
+>>>>>>> e7d768ed (Management scripts)
     else:
         print("❌  ONE OR MORE TESTS FAILED — review DEBUG blocks above")
     print("=" * 65)
