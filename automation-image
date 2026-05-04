@@ -1,0 +1,205 @@
+🧱 FINAL ARCHITECTURE (what you will recreate anywhere)
+
+You will have:
+
+✅ Jenkins container (CI/CD)
+✅ Python + Ansible container (my-env)
+✅ Docker inside Jenkins
+✅ Persistent Jenkins data
+✅ Fully portable setup
+📁 1. Folder structure (create this on ANY server)
+mkdir devops-setup
+cd devops-setup
+
+Create files:
+
+touch docker-compose.yml
+touch Dockerfile.jenkins
+touch Dockerfile.python
+touch requirements.txt
+🐳 2. Dockerfile for Python + Ansible (your working env)
+# Dockerfile.python
+
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    python3 python3-venv python3-pip \
+    sshpass git curl \
+    && apt-get clean
+
+# Create virtual env
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+CMD ["/bin/bash"]
+📦 3. Clean requirements.txt (IMPORTANT - stable version)
+
+Use THIS (already fixed issues you faced):
+
+ansible==9.2.0
+ansible-core==2.16.3
+apache-libcloud==3.4.1
+argcomplete==3.1.4
+attrs==23.2.0
+Babel==2.10.3
+blinker==1.7.0
+certifi==2023.11.17
+chardet==5.2.0
+click==8.1.6
+colorama==0.4.6
+configobj==5.0.8
+cryptography==41.0.7
+defer==1.0.4
+distro==1.9.0
+dnspython==2.6.1
+httplib2==0.20.4
+idna==3.6
+Jinja2==3.1.2
+jmespath==1.0.1
+jsonpatch==1.32
+jsonpointer==2.0
+jsonschema==4.10.3
+launchpadlib==1.11.0
+lazr.restfulclient==0.14.6
+lazr.uri==1.0.6
+lockfile==0.12.2
+markdown-it-py==3.0.0
+MarkupSafe==2.1.5
+mdurl==0.1.2
+netaddr==0.8.0
+ntlm-auth==1.5.0
+oauthlib==3.2.2
+olefile==0.46
+packaging==24.0
+passlib==1.7.4
+pexpect==4.9.0
+pillow==10.2.0
+ptyprocess==0.7.0
+pycparser
+Pygments==2.17.2
+PyJWT==2.7.0
+pyparsing==3.1.1
+pyrsistent==0.20.0
+pyserial==3.5
+python-dateutil==2.8.2
+pytz==2024.1
+pywinrm==0.4.3
+pyxdg==0.28
+PyYAML==6.0.1
+requests==2.31.0
+requests-ntlm==1.1.0
+resolvelib==1.0.1
+rich==13.7.1
+setuptools==68.1.2
+simplejson==3.19.2
+six==1.16.0
+typing_extensions==4.10.0
+urllib3==2.0.7
+wadllib==1.3.6
+wheel==0.42.0
+xmltodict==0.13.0
+🧑‍💻 4. Dockerfile for Jenkins
+# Dockerfile.jenkins
+
+FROM jenkins/jenkins:lts
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    apt-get clean
+
+RUN usermod -aG docker jenkins
+
+USER jenkins
+🔗 5. docker-compose.yml (FINAL)
+version: '3.8'
+
+services:
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+  my-env:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: my-env
+    tty: true
+
+volumes:
+  jenkins_home:
+⚙️ 6. Steps to run on ANY new server
+Step 1: Install Docker
+sudo apt update
+sudo apt install -y docker.io docker-compose
+sudo systemctl enable docker
+sudo systemctl start docker
+Step 2: Fix permission
+sudo usermod -aG docker $USER
+newgrp docker
+Step 3: Copy your setup
+
+👉 Copy devops-setup folder to new server
+
+Step 4: Run everything
+cd devops-setup
+
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+Step 5: Fix port issue (if needed)
+
+If 8080 busy:
+
+- "9090:8080"
+Step 6: Access Jenkins
+http://<server-ip>:8080
+Step 7: Get password
+docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+🔥 7. How Jenkins will use your Python env
+
+Inside Jenkins pipeline:
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Run Automation') {
+            steps {
+                sh 'docker exec my-env ansible --version'
+                sh 'docker exec my-env python3 --version'
+            }
+        }
+    }
+}
+💾 8. Make it SUPER portable (optional but powerful)
+
+Save images:
+
+docker save -o jenkins.tar devops-setup_jenkins
+docker save -o myenv.tar devops-setup_my-env
+
+Load anywhere:
+
+docker load -i jenkins.tar
+docker load -i myenv.tar
+docker-compose up -d
