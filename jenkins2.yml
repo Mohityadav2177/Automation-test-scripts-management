@@ -1,0 +1,92 @@
+---
+- name: HFCL Switch Test Suite
+  hosts: switches
+  gather_facts: false
+
+  vars:
+    python_path: "/home/hfcl/jenkins-venv/bin/python3"
+    script_path: "/home/hfcl/demo-script/switch-to-switch-testcases"
+
+  tasks:
+
+  - name: Get scripts
+    find:
+      paths: "{{ script_path }}"
+      patterns: "*.py"
+    register: found_scripts
+    delegate_to: localhost
+
+  - name: Sort scripts
+    set_fact:
+      scripts: "{{ found_scripts.files | map(attribute='path') | sort | list }}"
+
+  - name: Reset script list
+    set_fact:
+      script_list: []
+
+  - name: Run test scripts
+    shell: |
+      start=$(date +%s)
+      {{ python_path }} {{ item }} {{ inventory_hostname }} {{ ansible_user }} {{ ansible_password }}
+      rc=$?
+      end=$(date +%s)
+      echo "EXEC_TIME=$((end-start))"
+      exit $rc
+    loop: "{{ scripts }}"
+    register: script_results
+    ignore_errors: yes
+    delegate_to: localhost
+
+  - name: Build report list
+    set_fact:
+      script_list: "{{ script_list + [ {
+          'name': item.item | basename,
+          'status': 'PASS' if item.rc == 0 else 'FAIL',
+          'time': (item.stdout | regex_search('EXEC_TIME=(\\d+)') | default('0', true)),
+          'log': item.stdout
+        } ] }}"
+    loop: "{{ script_results.results }}"
+
+  - name: Count results
+    set_fact:
+      pass_count: "{{ script_list | selectattr('status','equalto','PASS') | list | length }}"
+      fail_count: "{{ script_list | selectattr('status','equalto','FAIL') | list | length }}"
+      total_count: "{{ script_list | length }}"
+
+  - name: Store report
+    set_fact:
+      switch_report:
+        host: "{{ inventory_hostname }}"
+        total: "{{ total_count }}"
+        pass_count: "{{ pass_count }}"
+        fail_count: "{{ fail_count }}"
+        scripts: "{{ script_list }}"
+
+
+# ======================================================
+# HTML REPORT
+# ======================================================
+- name: Generate HTML Report
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    workspace_path: "{{ lookup('env','WORKSPACE') | default('/tmp', true) }}"
+    workspace_file: "{{ workspace_path }}/hfcl_report.html"
+    tmp_file: "/tmp/hfcl_report.html"
+
+  tasks:
+
+  - name: Generate HTML in workspace
+    template:
+      src: templates/report.html.j2
+      dest: "{{ workspace_file }}"
+      unsafe_writes: true
+
+  - name: Copy report to /tmp
+    copy:
+      src: "{{ workspace_file }}"
+      dest: "{{ tmp_file }}"
+      remote_src: yes
+      mode: '0644'
+      unsafe_writes: true
